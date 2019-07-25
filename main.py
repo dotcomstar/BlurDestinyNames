@@ -6,18 +6,21 @@ import cv2
 def main():
     print("Starting main()\n")
     print(cv2.__version__)
-    vidcap = cv2.VideoCapture('OneMinuteCollatGame.mp4')
+    vidcap = cv2.VideoCapture('OneMinuteCollatGame.mp4')  # Replace with the name of your file.
+        # Note: Eventually, I want this to be input by the user in a GUI, or perhaps by dragging and
+        # dropping the file.
     successful,image = vidcap.read()
     height,width,layers = image.shape
-    output_video = cv2.VideoWriter('video.avi',cv2.VideoWriter_fourcc(*'DIVX'),30,(width,height))
-    output_video.write(image)
+    output_video = cv2.VideoWriter('video.avi',cv2.VideoWriter_fourcc(*'DIVX'),30,(width,height))  # Specified the output file and FPS.
+        # The same comment above about user input in GUI also applies here.
+    output_video.write(image)  # The first frame is written to the video.
     count = 0
     successful = True
     while successful and count < 100:
-        cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file
-        successful,image = vidcap.read()
+        cv2.imwrite("frame%d.jpg" % count, image)  # Saves the frame as JPEG file.
+        successful,image = vidcap.read()  # Takes
         output_video.write(image)
-        print 'Read a new frame: ', successful
+        print("Read a new frame: " + str(successful))  # Less preferred syntax, but works with Python 2.7
         count += 1
     output_video.release()
     print("Finished main()")
