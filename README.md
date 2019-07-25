@@ -1,6 +1,9 @@
 # BlurDestinyNames
-A simple way to blur names in Destiny 2 on PC. This was created in response to some of TrueVanguard's videos, where opponents who T-Bagged were harassed online.
+A simple way to blur names in Destiny 2 on PC. This was created in response to some of [TrueVanguard's](https://www.youtube.com/channel/UCY6Qy4qU-d13U42280CxIvA) videos, where opponents who T-Bagged were harassed online.
 
-## Original Videos
-[![Initial Unbroken T-Bagger Video](https://user-images.githubusercontent.com/32310882/61895681-39aca080-aee1-11e9-9a85-e4bb836870a0.png)](https://www.youtube.com/watch?v=Rgk-NxtBxt4)
-[![Response Video Addressing Harrassment](https://user-images.githubusercontent.com/32310882/61895736-59dc5f80-aee1-11e9-9dda-f5d345ffa198.png)](https://www.youtube.com/watch?v=XdWfCpLskgE)
+### Repository Creators:
+@dotcomstar and @Toji99
+
+## Original TrueVanguard Videos
+[<img src="https://user-images.githubusercontent.com/32310882/61898066-834bba00-aee6-11e9-92f5-6798f2dea62b.jpg" alt="Initial Unbroken T-Bagger Video" width="500">](https://www.youtube.com/watch?v=Rgk-NxtBxt4)
+[<img src="https://user-images.githubusercontent.com/32310882/61898206-cefe6380-aee6-11e9-9f7b-63fe6bb14c12.jpg" alt="Response Video Addressing Harrassment" width="500">](https://www.youtube.com/watch?v=XdWfCpLskgE)
