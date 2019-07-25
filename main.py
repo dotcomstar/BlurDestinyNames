@@ -18,9 +18,9 @@ def main():
     successful = True
     while successful and count < 100:
         cv2.imwrite("frame%d.jpg" % count, image)  # Saves the frame as JPEG file.
-        successful,image = vidcap.read()  # Takes
-        output_video.write(image)
-        print("Read a new frame: " + str(successful))  # Less preferred syntax, but works with Python 2.7
+        successful,image = vidcap.read()  # Takes individual frame from the video and saves as an image.
+        output_video.write(image)  # Adds that image to the outputted video file.
+        print("Read a new frame: " + str(successful))  # This is the less-preferred printing syntax, but works with Python 2.7.
         count += 1
     output_video.release()
     print("Finished main()")
