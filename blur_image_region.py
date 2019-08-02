@@ -14,15 +14,16 @@ clan_roster_rectangle = (1368, 250, 1843, 922)  # Currently, takes the hard-code
 # This function takes in an image and a 2x2 or 4x4 tuple specifying where on the image to blur.
 # The function returns a new image with the specified region blurred with a bicubic resample.
 def blur_single_frame(image_file, region_to_blur):
-    print("Starting blur_single_frame()")
+    print("> "),
     image = Image.open(image_file)  # Opens image file.
     small_image = image.resize((32,32),resample=Image.BILINEAR)  # Resizes down to 32x32 pixels.
         # For a smoother blur, increase the size of the scaled image.
     blurred_image = small_image.resize(image.size,Image.BICUBIC)  # Scales image back up using BICUBIC resample filter, thereby blurring it.
     cropped_image = blurred_image.crop(region_to_blur)  # Crops out a smaller section of the image.
     image.paste(cropped_image, (region_to_blur), None)  # Re-insert the smaller blurred section of the image onto the original.
-    return image  # Returns the new blurred iamge.
-    print("Finished blur_single_frame()")
+    # return image  # Returns the new blurred image.
+    image.save(image_file)  # Writes the image back to the external location. Note: This is jank.
+    print("Successfully blurred frame")
 
 
 def debug_blur_single_frame(image_file, region_to_blur, location_to_save_reference_image=default_location_to_save_reference_image):
