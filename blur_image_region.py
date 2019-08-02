@@ -11,7 +11,7 @@ sample_image_file = "temp_image_frames/frame216.jpg"
 default_location_to_save_reference_image = "current_working_image_before_blur.jpg"
 clan_roster_rectangle = (1368, 250, 1843, 922)  # Currently, takes the hard-coded name values from clan roster page.
 
-# This function takes in an image and a 2x2 or 4x4 tuple specifying where on the image to blur.
+# This function takes in an image and a 4x4 tuple specifying the image region to blur.
 # The function returns a new image with the specified region blurred with a bicubic resample.
 def blur_single_frame(image_file, region_to_blur):
     print("> "),
