@@ -18,7 +18,7 @@ def blur_single_frame(image_file, region_to_blur):
     image = Image.open(image_file)  # Opens image file.
     small_image = image.resize((32,32),resample=Image.BILINEAR)  # Resizes down to 32x32 pixels.
         # For a smoother blur, increase the size of the scaled image.
-    blurred_image = small_image.resize(image.size,Image.BICUBIC)  # Scales image back up using BICUBIC resample filter, thereby blurring it..
+    blurred_image = small_image.resize(image.size,Image.BICUBIC)  # Scales image back up using BICUBIC resample filter, thereby blurring it.
     cropped_image = blurred_image.crop(region_to_blur)  # Crops out a smaller section of the image.
     image.paste(cropped_image, (region_to_blur), None)  # Re-insert the smaller blurred section of the image onto the original.
     return image  # Returns the new blurred iamge.
@@ -30,7 +30,7 @@ def debug_blur_single_frame(image_file, region_to_blur, location_to_save_referen
 
     # Open image file and save to upper folder for reference
     image = Image.open(image_file)
-    image.save(location_to_save_reference_image)
+    image.save(location_to_save_reference_image)  # The original function does not save this file.
 
     # Resize smoothly down to 32x32 pixels
     small_image = image.resize((32,32),resample=Image.BILINEAR)  # For a smoother blur, increase the size of the scaled image.

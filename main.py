@@ -19,7 +19,13 @@ def blur_video(video_file=default_video_file, video_output_file=default_video_ou
     output_video = cv2.VideoWriter(video_output_file,cv2.VideoWriter_fourcc(*'DIVX'),video_fps,(width,height))
     count = 0
     while successful:
-        image = b.blur_single_frame(image, b.clan_roster_rectangle)
+        #image = b.blur_single_frame(image, b.clan_roster_rectangle)
+        print("First successful")
+        small_image = image.resize((32,32),Image.BILINEAR)  # Resizes down to 32x32 pixels.
+            # For a smoother blur, increase the size of the scaled image.
+        blurred_image = small_image.resize(image.size,Image.BICUBIC)  # Scales image back up using BICUBIC resample filter, thereby blurring it.
+        cropped_image = blurred_image.crop(b.clan_roster_rectangle)  # Crops out a smaller section of the image.
+        image.paste(cropped_image, (b.clan_roster_rectangle), None)  # Re-insert the smaller blurred section of the image onto the original.
         output_video.write(image)  # Adds the input video's frame to the output video.
         # cv2.imwrite("temp_image_frames/frame%d.jpg" % count, image)  # Saves the frame as a JPEG file for debugging purposes.
         successful,image = vidcap.read()  # Takes the next individual frame from the video and saves it as an image.
