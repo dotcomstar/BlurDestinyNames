@@ -2,8 +2,12 @@
 import os
 import sys
 import cv2
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 import blur_image_region as b
+import pytesseract
 
 default_input_video_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
 default_video_output_file = 'blurred_video.avi'
@@ -31,9 +35,18 @@ def blur_video(input_video_file=default_input_video_file, video_output_file_file
 def main():
     print("Starting main()")
     print("Using CV2 version: " + cv2.__version__ + "\n")
-    # image = b.blur_single_frame(b.sample_image_file, b.clan_roster_rectangle)
-    # image.save('temp_blur_test.jpg')
-    blur_video()
+    # b.blur_single_frame(b.sample_image_file, b.clan_roster_rectangle, should_preserve_original_image=True, should_debug=True)
+
+    list_of_character_locations = pytesseract.image_to_boxes(Image.open(b.sample_image_file))
+    print("Type of return value is: " + str(type(list_of_character_locations)) + "\n")
+    print(list_of_character_locations)
+
+
+    list_of_character_locations = ''.join(c for c in list_of_character_locations if c.isdigit() or c == " ")  # Removes all non-numeric and non-space characters.
+    x = [int(i) for i in list_of_character_locations.split()]  # Parses the data into a list.
+    print(x)
+
+    # blur_video()
     print("Finished main()")
 
 # ~~~~ Don't worry about this for now ~~~~
