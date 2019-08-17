@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# main.py
 import os
 import sys
 import cv2
@@ -6,8 +7,8 @@ try:
     from PIL import Image
 except ImportError:
     import Image
-import blur_image_region as b
 import pytesseract
+import blur_image_region as b
 
 default_input_video_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
 default_video_output_file = 'blurred_video.avi'
@@ -17,8 +18,8 @@ temp_image_location = "temp_video_during_blur.jpg"
 # Note: Eventually, I want the arguments to be specified by the user through some sort of GUI,
 # perhaps by dragging and dropping the file and typing in the file locations / FPS?.
 def blur_video(input_video_file=default_input_video_file, video_output_file_file=default_video_output_file, video_fps=default_video_fps):
-    vidcap = cv2.VideoCapture(input_video_file)
-    successful,image = vidcap.read()  # Gets the first frame of the video for measurement purposes.
+    vidcap = cv2.VideoCapture(input_video_file)  # Creates a new video capture object that can be read like an iterator.
+    successful, image = vidcap.read()  # Gets the first frame of the video for measurement purposes.
     height,width,layers = image.shape  # Measures dimensions from the first frame.
     output_video = cv2.VideoWriter(video_output_file_file,cv2.VideoWriter_fourcc(*'DIVX'),video_fps,(width,height))
     count = 0
