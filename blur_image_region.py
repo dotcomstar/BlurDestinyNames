@@ -27,11 +27,32 @@ def blur(image_to_process, resize_ratio=(1.0/30.0)):
     blurred_image = small_image.resize(image_to_process.size, resample=Image.NEAREST)  # Scales image back up using NEAREST resample filter, thereby blurring it.
     return blurred_image
 
-def find_characters(image_to_process):  # TODO: Parse the list of character locations and convert to 2D array.
-    unprocessed_list_of_character_locations = pytesseract.image_to_boxes(image_to_process)  # Note: Takes Image file, not CV2 image.
-    unprocessed_list_of_character_locations = ''.join(c for c in unprocessed_list_of_character_locations if c.isdigit() or c == " ")  # Removes all non-numeric and non-space characters.
-    list_of_character_locations = [int(i) for i in unprocessed_list_of_character_locations.split()]  # Parses the data into a list.
-    return list_of_character_locations
+# This function takes an image and an optional boolean for debugging purposes
+# as parameters. This function will parse the image for text, and return
+# the locations of each text character as a 2D tuple (static array).
+# The debugging boolean will print the results at each step along the way.
+def find_characters(image_to_process, should_debug=False):
+    unicode_wall_of_character_locations = pytesseract.image_to_boxes(image_to_process)  # Note: Takes Image file, not CV2 image.
+    if should_debug:
+        print("All the characters and their locations in Unicode are: ")
+        print(unicode_wall_of_character_locations)
+    string_wall_of_character_locations = repr(unicode_wall_of_character_locations)  # Converts the unicode file to a string
+    if should_debug:
+        print("\nThe characters in string format: ")
+        print(string_wall_of_character_locations)
+    string_wall_of_character_locations = string_wall_of_character_locations.replace("\\n", " ")  # Replaces all newlines with a space character.
+    if should_debug:
+        print("\nAll newlines should now be spaces: ")
+        print(string_wall_of_character_locations)
+    string_tuple_of_character_locations = tuple(i for i in string_wall_of_character_locations.split())  # Parses the data into a tuple (a static array).
+    if should_debug:
+        print("\nUnsplit tuple with size: " + str(len(string_tuple_of_character_locations)))
+        print(str(string_tuple_of_character_locations) + "\n")
+    split_tuple_of_character_locations = tuple(string_tuple_of_character_locations[a : (a + 6)] for a in range(0, len(string_tuple_of_character_locations), 6))  # Splits the tuple every 6 items.
+    if should_debug:
+        print("Split tuple with size: " + str(len(string_tuple_of_character_locations)))
+        print(split_tuple_of_character_locations)
+    return split_tuple_of_character_locations
 
 # This function takes in an image and a 4x4 tuple specifying the image region to blur.
 # The function returns a new image with the specified region blurred with a nearest resample.
@@ -53,5 +74,5 @@ def blur_single_frame(image_file, region_to_blur, should_preserve_original_image
     if should_preserve_original_image:
         image.save("current_working_image_after_blur.jpg")
     else:  # Should override original image
-        image.save(image_file)  # Writes the image back to the external location. TODO: Figure out how to pass around images between PIL and CV2..
+        image.save(image_file)  # Writes the image back to the external location. TODO: Figure out how to pass around images between PIL and CV2.
     print("Successfully blurred frame")
