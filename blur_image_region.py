@@ -7,28 +7,32 @@ https://stackoverflow.com/questions/47143332/how-to-pixelate-a-square-image-to-2
 '''
 
 from PIL import Image
-from math import ceil  # Used for rounding up
+from math import ceil  # Used for rounding up.
 
 sample_image_file = "temp_image_frames/frame217.jpg"
 clan_roster_rectangle = (1368, 250, 1843, 922)  # Currently, takes the hard-coded name values from clan roster page.
 
-
+# This function takes an image as a parameter, and returns that image with
+# all of its text blurred out.
 def process_frame(image_to_process):
     blurred_image = blur(image_to_process)
     list_of_character_locations = find_characters(image_to_process)
     for character in list_of_character_locations:
-        image = crop_character_and_place_in_larger_image(image_to_process, blurred_image)
+        image = crop_character_and_place_in_larger_image(image_to_process, blurred_image, character)
     return image
 
+# This function takes as parameters an image and an optional floating point
+# number to determine the blurriness of the image. This function will return
+# the same input image, but entirely blurred.
 # Note: For a smoother blur, increase the size of the scaled image.
 def blur(image_to_process, resize_ratio=(1.0/30.0)):
     smaller_image_size = (ceil(image_to_process.size[0] * resize_ratio), ceil(image_to_process.size[1] * resize_ratio))
-    small_image = image_to_process.resize(smaller_image_size, resample=Image.BILINEAR)  # Resizes down to 64x64 pixels.
-    blurred_image = small_image.resize(image_to_process.size, resample=Image.NEAREST)  # Scales image back up using NEAREST resample filter, thereby blurring it.
+    small_image = image_to_process.resize(smaller_image_size, resample=Image.BILINEAR)  # Shrinks image down to a much smaller size.
+    blurred_image = small_image.resize(image_to_process.size, resample=Image.NEAREST)  # Scales image back up to its original size using the NEAREST resample filter, thereby blurring it.
     return blurred_image
 
-# This function takes an image and an optional boolean for debugging purposes
-# as parameters. This function will parse the image for text, and return
+# This function takes as parameters an image and an optional boolean for
+# debugging purposes. This function will parse the image for text, and return
 # the locations of each text character as a 2D tuple (static array).
 # The debugging boolean will print the results at each step along the way.
 def find_characters(image_to_process, should_debug=False):
@@ -48,7 +52,7 @@ def find_characters(image_to_process, should_debug=False):
     if should_debug:
         print("\nUnsplit tuple with size: " + str(len(string_tuple_of_character_locations)))
         print(str(string_tuple_of_character_locations) + "\n")
-    split_tuple_of_character_locations = tuple(string_tuple_of_character_locations[a : (a + 6)] for a in range(0, len(string_tuple_of_character_locations), 6))  # Splits the tuple every 6 items.
+    split_tuple_of_character_locations = tuple(string_tuple_of_character_locations[a : (a + 6)] for a in range(0, len(string_tuple_of_character_locations), 6))  # Splits the tuple every 6 positions.
     if should_debug:
         print("Split tuple with size: " + str(len(string_tuple_of_character_locations)))
         print(split_tuple_of_character_locations)
