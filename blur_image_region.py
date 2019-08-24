@@ -21,6 +21,7 @@ def process_frame(image_to_process):
         image = crop_character_and_place_in_larger_image(image_to_process, blurred_image, character)
     return image
 
+
 # This function takes as parameters an image and an optional floating point
 # number to determine the blurriness of the image. This function will return
 # the same input image, but entirely blurred.
@@ -30,6 +31,7 @@ def blur(image_to_process, resize_ratio=(1.0/30.0)):
     small_image = image_to_process.resize(smaller_image_size, resample=Image.BILINEAR)  # Shrinks image down to a much smaller size.
     blurred_image = small_image.resize(image_to_process.size, resample=Image.NEAREST)  # Scales image back up to its original size using the NEAREST resample filter, thereby blurring it.
     return blurred_image
+
 
 # This function takes as parameters an image and an optional boolean for
 # debugging purposes. This function will parse the image for text, and return
@@ -57,6 +59,7 @@ def find_characters(image_to_process, should_debug=False):
         print("Split tuple with size: " + str(len(string_tuple_of_character_locations)))
         print(split_tuple_of_character_locations)
     return split_tuple_of_character_locations
+
 
 # This function takes in an image and a 4x4 tuple specifying the image region to blur.
 # The function returns a new image with the specified region blurred with a nearest resample.

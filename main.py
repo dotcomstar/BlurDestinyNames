@@ -33,30 +33,10 @@ def blur_video(input_video_file=default_input_video_file, video_output_file_file
         count += 1
     output_video.release()
 
+
 def main():
     print("Starting main()")
     print("Using CV2 version: " + cv2.__version__ + "\n")
-
-    unicode_wall_of_character_locations = pytesseract.image_to_boxes(Image.open(b.sample_image_file))
-    print("All the characters and their locations in Unicode are: ")
-    print(unicode_wall_of_character_locations)
-    string_wall_of_character_locations = repr(unicode_wall_of_character_locations)
-
-    print("\nThe characters in string format: ")
-    print(string_wall_of_character_locations)
-
-    string_wall_of_character_locations = string_wall_of_character_locations.replace("\\n", " ")  # Replaces all newlines with a space.
-
-    print("\nAll newlines should now be spaces: ")
-    print(string_wall_of_character_locations)
-
-    string_tuple_of_character_locations = tuple(i for i in string_wall_of_character_locations.split())  # Parses the data into a list.
-    print("\nUnsplit tuple with size: " + str(len(string_tuple_of_character_locations)))
-    print(str(string_tuple_of_character_locations) + "\n")
-
-    print("Split tuple with size: " + str(len(string_tuple_of_character_locations)))
-    split_tuple_of_character_locations = tuple(string_tuple_of_character_locations[a : (a + 6)] for a in range(0, len(string_tuple_of_character_locations), 6))
-    print(split_tuple_of_character_locations)
 
     print("Finished main()")
 
