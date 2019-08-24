@@ -21,13 +21,13 @@ clan_roster_rectangle = (1368, 250, 1843, 922)  # Currently, takes the hard-code
 def initialize_video(video_file):
     return cv2.VideoCapture(video_file)
 
-
+# TODO: Fix this command.
 def convert_cv2_to_pil(cv2_image):
     cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
     pil_image = Image.fromarray(cv2_image)
     return pil_image
 
-
+# TODO: Fix this command.
 def convert_pil_to_cv2(pil_image):
     cv2_image = numpy.array(pil_image)
     cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
