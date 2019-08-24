@@ -38,6 +38,25 @@ def main():
     print("Starting main()")
     print("Using CV2 version: " + cv2.__version__ + "\n")
 
+    image_file = Image.open(b.sample_image_file)
+    image_file = b.convert_pil_to_cv2(image_file)
+    image_file = b.convert_cv2_to_pil(image_file)
+
+    b.find_characters(image_file, should_debug=True)
+
+    exit()
+
+    video_file = b.initialize_video(default_input_video_file)
+    successful, current_frame = video_file.read()  # Gets the first frame of the video for measurement purposes.
+    height, width, layers = current_frame.shape  # Measures dimensions from the first frame.
+    output_video = cv2.VideoWriter(default_video_output_file, cv2.VideoWriter_fourcc(*'DIVX'), default_video_fps, (width, height))
+    while successful:
+        current_frame = b.process_frame(current_frame)
+        output_video.write(current_frame)  # Adds the input video's frame to the output video.
+        successful, current_frame = video_file.read()  # Takes the next individual frame from the video and saves it as an image.
+        print("Read a new frame: " + str(successful) + "  --"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
+    b.finish_video(output_video)
+
     print("Finished main()")
 
 # ~~~~ Don't worry about this for now ~~~~
