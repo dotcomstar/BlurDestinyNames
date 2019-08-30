@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# main.py
 import os
 import sys
 import cv2

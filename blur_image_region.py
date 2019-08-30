@@ -1,4 +1,3 @@
-# blur_image_region.py
 '''
 This module pixelates a file.
 
