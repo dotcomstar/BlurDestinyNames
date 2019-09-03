@@ -1,5 +1,5 @@
 # BlurDestinyNames
-A simple way to blur names in Destiny 2 on PC. This was created in response to some of [TrueVanguard's](https://www.youtube.com/channel/UCY6Qy4qU-d13U42280CxIvA) videos, where opponents who T-Bagged him were harassed online.
+A simple way to blur character names in Destiny 2 on PC. This was created in response to some of [TrueVanguard's](https://www.youtube.com/channel/UCY6Qy4qU-d13U42280CxIvA) videos, where opponents who T-Bagged him were harassed online.
 
 ### Repository Creators:
 @dotcomstar and @Toji99
