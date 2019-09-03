@@ -18,7 +18,7 @@ def main():
     image_file = b.convert_pil_to_cv2(image_file)
     image_file = b.convert_cv2_to_pil(image_file)
     
-    list_of_characters = b.find_characters(image_file, should_debug=True)
+    b.find_characters(image_file, should_debug=True)
 
     exit()
 
