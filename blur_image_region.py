@@ -14,7 +14,7 @@ import cv2
 import pytesseract
 import numpy
 
-default_input_video_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
+default_video_input_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
 default_video_output_location = 'blurred_video.avi'
 default_video_fps = 30
 temp_image_location = "temp_video_during_blur.jpg"
@@ -22,13 +22,13 @@ sample_image_file = "temp_image_frames/frame217.jpg"
 
 # Note: Eventually, I want the arguments to be specified by the user through some sort of GUI,
 # perhaps by dragging and dropping the file and typing in the file locations / FPS?.
-def blur_video(input_video_file, video_output_location=default_video_output_location, video_fps=default_video_fps):
-    video_file = b.initialize_video(input_video_file)
+def blur_video(video_input_file, video_output_location=default_video_output_location, video_fps=default_video_fps):
+    video_file = initialize_video(video_input_file)
     successful, current_frame = video_file.read()  # Gets the first frame of the video for measurement purposes.
     height, width, layers = current_frame.shape  # Measures dimensions from the first frame.
-    output_video = cv2.VideoWriter(video_output_location, cv2.VideoWriter_fourcc(*'DIVX'), video_fps, (width, height))
+    output_video = cv2.VideoWriter(video_output_location, cv2.VideoWriter_fourcc(*'DIVX'), video_fps, (width, height))  # Formats the video.
     while successful:
-        current_frame = b.process_frame(current_frame)
+        current_frame = process_frame(current_frame)
         output_video.write(current_frame)  # Adds the input video's frame to the output video.
         successful, current_frame = video_file.read()  # Takes the next individual frame from the video and saves it as an image.
         print("Read a new frame: " + str(successful) + "  --"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
@@ -39,7 +39,6 @@ def initialize_video(video_file):
     return cv2.VideoCapture(video_file)
 
 
-# TODO: Fix this command.
 def convert_cv2_to_pil(cv2_image):
     cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
     pil_image = Image.fromarray(cv2_image)
@@ -48,13 +47,15 @@ def convert_cv2_to_pil(cv2_image):
 
 # TODO: Fix this command.
 def convert_pil_to_cv2(pil_image):
+    pil_image = pil_image.convert('RGB')
     cv2_image = numpy.array(pil_image)
-    cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
     cv2_image = cv2_image[:, :, ::-1].copy()
+    # cv2_image = cv2.cvtColor(numpy.array(pil_image), cv2.COLOR_BGR2RGB)
+    # cv2_image = cv2_image[:, :, ::-1].copy()
     return cv2_image
 
 
-# This function takes an image as a parameter, and returns that image with
+# This function takes a PIL image as a parameter, and returns that image with
 # all of its text blurred out.
 def process_frame(image_to_process):
     image_to_process = convert_cv2_to_pil(image_to_process)

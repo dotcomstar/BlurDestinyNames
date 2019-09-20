@@ -1,0 +1,8 @@
+# Ignore everything except the code itself
+
+*
+
+!.gitignore
+!main.py
+!blur_image_region.py
+!README.md
