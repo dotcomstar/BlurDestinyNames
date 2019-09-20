@@ -1,4 +1,4 @@
-# Ignore everything except the code itself
+# Ignore everything except the code itself and a sample image
 
 *
 
@@ -6,3 +6,4 @@
 !main.py
 !blur_image_region.py
 !README.md
+!temp_image_frames/frame217.jpg
