@@ -11,7 +11,7 @@ env: YELLOW="\033[1;33m" \
 # Download dependencies
 # =========================================
 before_install:
-  - pip install matplotlib  # Need for opencv2.
+  - pip install --upgrade matplotlib  # Need for opencv2.
 #   - sudo apt-get -qq --download-only update
 #   - sudo apt-get -qq --download-only install python-numpy python-opencv
 #   - sudo apt-get -qq --download-only install libhdf5-serial-dev hdf5-tools
