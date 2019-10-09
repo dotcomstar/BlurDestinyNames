@@ -105,6 +105,9 @@ def find_characters(image_to_process, should_debug=False):
         print(split_tuple_of_character_locations)
     return split_tuple_of_character_locations
 
+#TODO: Write comment for this function
+def crop_character_and_place_in_larger_image(image_to_process, blurred_image, character):
+    # TODO: Implement this function
 
 def finish_video(video_file):
     video_file.release()
