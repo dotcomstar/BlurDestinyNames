@@ -16,8 +16,8 @@ install:
   - pip install --upgrade pylint  # Use pylint to verify code. Make sure to install with pip.
   - pip install --upgrade matplotlib  # Need for opencv2.
   - pip install --upgrade numpy Pillow pytesseract
-  - pip install opencv-contrib-python  # Requires matplotlib and numpy to also be installed.
-#  - pip install --upgrade opencv-python  # Requires matplotlib and numpy to also be installed.
+#  - pip install opencv-contrib-python  # Requires matplotlib and numpy to also be installed.
+  - pip install --upgrade opencv-python  # Requires matplotlib and numpy to also be installed.
 
 # =========================================
 # Actually verify files
