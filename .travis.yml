@@ -1,0 +1,17 @@
+# .travis.yml created by Jet Lee
+
+os: linux
+dist: xenial  # Use Ubuntu 16.04 as our Travis CI environment
+language: python
+python: "2.7"  # Soon to be deprecated, will need to update.
+env: YELLOW="\033[1;33m" \
+     NC="\033[0m" # No Color
+
+install:
+  # Install required dependencies
+  - pip install --upgrade pylint # Use pip to install Pylint
+
+script:
+  # Lint the Python files
+  - echo -e "${YELLOW}Analyzing main.py...${NC}" && pylint --errors-only main.py
+  - echo -e "${YELLOW}Analyzing blur_image_region.py...${NC}" && pylint --errors-only blur_image_region.py
