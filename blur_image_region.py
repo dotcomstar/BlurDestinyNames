@@ -32,7 +32,7 @@ def blur_video(video_input_file, video_output_location=default_video_output_loca
         output_video.write(current_frame)  # Adds the input video's frame to the output video.
         successful, current_frame = video_file.read()  # Takes the next individual frame from the video and saves it as an image.
         print("Read a new frame: " + str(successful) + "  --"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
-    b.finish_video(output_video)
+    finish_video(output_video)
 
 
 def initialize_video(video_file):
