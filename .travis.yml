@@ -25,7 +25,6 @@ install:
   - pip install --upgrade numpy Pillow pytesseract
   - sudo apt-get -qq install python-opencv
 #  - sudo apt-get -qq install python-numpy python-opencv
-  - sudo apt
 
 # =========================================
 # Actually verify files
