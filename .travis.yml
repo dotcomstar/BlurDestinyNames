@@ -7,10 +7,27 @@ python: "2.7"  # Soon to be deprecated, will need to update.
 env: YELLOW="\033[1;33m" \
      NC="\033[0m" # No Color
 
+# =========================================
+# Download dependencies
+# =========================================
+before_install:
+  - pip install matplotlib  # Need for opencv2.
+#   - sudo apt-get -qq --download-only update
+#   - sudo apt-get -qq --download-only install python-numpy python-opencv
+#   - sudo apt-get -qq --download-only install libhdf5-serial-dev hdf5-tools
+
+# =========================================
+# Install dependencies.
+# Note: Use pip for virtual environments, but apt-get is faster since it is pre-compiled.
+# =========================================
 install:
   # Install required dependencies
-  - pip install --upgrade pylint # Use pip to install Pylint
+  - pip install --upgrade pylint  # Use pylint to verify code. Make sure to install with pip.
+  - pip install --upgrade numpy opencv-python Pillow pytesseract
 
+# =========================================
+# Actually verify files
+# =========================================
 script:
   # Lint the Python files
   - echo -e "${YELLOW}Analyzing main.py...${NC}" && pylint --errors-only main.py
