@@ -23,7 +23,7 @@ install:
   # Install required dependencies
   - pip install --upgrade pylint  # Use pylint to verify code. Make sure to install with pip.
   - pip install --upgrade numpy Pillow pytesseract
-  - sudo apt-get -qq install python-opencv
+  - pip install --upgrade opencv-python  # Requires matplotlib and numpy to also be installed.
 #  - sudo apt-get -qq install python-numpy python-opencv
 
 # =========================================
@@ -31,5 +31,5 @@ install:
 # =========================================
 script:
   # Lint the Python files
-  - echo -e "${YELLOW}Analyzing main.py...${NC}" && pylint --errors-only main.py
-  - echo -e "${YELLOW}Analyzing blur_image_region.py...${NC}" && pylint --errors-only blur_image_region.py
+  - echo -e "${YELLOW}Analyzing main.py...${NC}" && pylint --errors-only "$TRAVIS_BUILD_DIR"/main.py
+  - echo -e "${YELLOW}Analyzing blur_image_region.py...${NC}" && pylint --errors-only "$TRAVIS_BUILD_DIR"/blur_image_region.py
