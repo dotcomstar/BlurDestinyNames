@@ -8,6 +8,17 @@ env: YELLOW="\033[1;33m" \
      NC="\033[0m" # No Color
 
 # =========================================
+# Specify when to receive build notifications.
+# The options are always, change, and never.
+# =========================================
+notifications:
+  email:
+    recipients:
+      - gamestar109@live.com
+    on_success: change # default: change
+    on_failure: change # default: always
+
+# =========================================
 # Install dependencies.
 # Note: Use pip for virtual environments, but apt-get is faster since it is pre-compiled.
 # =========================================
