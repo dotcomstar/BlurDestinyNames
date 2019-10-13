@@ -57,6 +57,8 @@ def test_convert_pil_to_cv2():
         print("Read a new frame successfully"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7
         count += 1.
     b.finish_video(output_video)
+
+
 # ~~~~ Don't worry about this for now ~~~~
 if __name__ == "__main__":
     main()
