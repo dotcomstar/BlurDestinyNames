@@ -108,6 +108,8 @@ def find_characters(image_to_process, should_debug=False):
 #TODO: Write comment for this function
 def crop_character_and_place_in_larger_image(image_to_process, blurred_image, character):
     # TODO: Implement this function
+    pass
 
 def finish_video(video_file):
     video_file.release()
+
