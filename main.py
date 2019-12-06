@@ -13,15 +13,15 @@ def main():
     print("Starting main()")
     print("Using CV2 version: " + cv2.__version__ + "\n")
 
-    test_convert_pil_to_cv2()
+    # test_convert_pil_to_cv2()
 
     # image_file = Image.open(b.sample_image_file)
     # image_file = b.convert_pil_to_cv2(image_file)
     # image_file = b.convert_cv2_to_pil(image_file)
     # b.find_characters(image_file, should_debug=True)  # This line should work
-                                                        # in the final version.
+    #                                                     # in the final version.
 
-    exit()
+    # exit()
 
     b.blur_video(b.default_video_input_file)  # TODO: Enable GUI input for these parameters.
 

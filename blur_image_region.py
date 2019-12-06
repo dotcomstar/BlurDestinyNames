@@ -17,7 +17,7 @@ import numpy
 default_video_input_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
 default_video_output_location = 'blurred_video.avi'
 default_video_fps = 30
-temp_image_location = "temp_video_during_blur.jpg"
+temp_image_location = "temp_image_during_blur.jpg"
 sample_image_file = "temp_image_frames/frame217.jpg"
 
 # Note: Eventually, I want the arguments to be specified by the user through some sort of GUI,
@@ -39,19 +39,29 @@ def initialize_video(video_file):
     return cv2.VideoCapture(video_file)
 
 
+# TODO: Optimize this command so it does not need to read and write each time.
+# Note also that this leads to differences in the characters found with
+# find_characters()
 def convert_cv2_to_pil(cv2_image):
-    cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
-    pil_image = Image.fromarray(cv2_image)
+    cv2.imwrite(temp_image_location, cv2_image)
+    pil_image = Image.open(temp_image_location)
+    # cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
+    # pil_image = Image.fromarray(cv2_image)
     return pil_image
 
 
-# TODO: Fix this command.
+# TODO: Optimize this command so it does not need to read and write each time.
+# Note also that this leads to differences in the characters found with
+# find_characters()
 def convert_pil_to_cv2(pil_image):
-    pil_image = pil_image.convert('RGB')
-    cv2_image = numpy.array(pil_image)
-    cv2_image = cv2_image[:, :, ::-1].copy()
-    # cv2_image = cv2.cvtColor(numpy.array(pil_image), cv2.COLOR_BGR2RGB)
+    pil_image.save(temp_image_location, "JPEG")
+    pil_image.close()
+    cv2_image = cv2.imread(temp_image_location, cv2.IMREAD_COLOR)
+    # pil_image = pil_image.convert('RGB')
+    # cv2_image = numpy.array(pil_image)
     # cv2_image = cv2_image[:, :, ::-1].copy()
+    # # cv2_image = cv2.cvtColor(numpy.array(pil_image), cv2.COLOR_BGR2RGB)
+    # # cv2_image = cv2_image[:, :, ::-1].copy()
     return cv2_image
 
 
@@ -61,9 +71,8 @@ def process_frame(image_to_process):
     image_to_process = convert_cv2_to_pil(image_to_process)
     blurred_image = blur(image_to_process)
     list_of_character_locations = find_characters(image_to_process)
-    for character in list_of_character_locations:
-        image = crop_character_and_place_in_larger_image(image_to_process, blurred_image, character)
-    image = convert_pil_to_cv2(image)
+    image_to_process = convert_pil_to_cv2(image_to_process)
+    image = blur_all_characters(image_to_process, blurred_image, list_of_character_locations)
     return image
 
 
@@ -105,10 +114,29 @@ def find_characters(image_to_process, should_debug=False):
         print(split_tuple_of_character_locations)
     return split_tuple_of_character_locations
 
-#TODO: Write comment for this function
-def crop_character_and_place_in_larger_image(image_to_process, blurred_image, character):
+# This function takes as parameters an unblurred image, its blurred equivalent,
+# and a list of all the characters in the image formatted as
+# ('single character', 'x1', 'x2', 'y1', 'y2', '0')
+# TODO: Check if bounding boxes return x1 y1 notation, or top, left, width, height.
+# https://stackoverflow.com/questions/20831612/getting-the-bounding-box-of-the-recognized-words-using-python-tesseract
+def blur_all_characters(image_to_process, blurred_image, list_of_character_locations):
     # TODO: Implement this function
-    pass
+    processed_image = image_to_process
+    for character in list_of_character_locations:
+        try:
+            start_point = (int(character[1]), int(character[2]))  # x1, y1
+            end_point = (int(character[3]), int(character[4]))  # x2, y2
+        except IndexError:
+            print("Error: Index out of bounds.")
+            print("Offending character tuple: " + str(character) + " on image of size " + str(processed_image.shape))
+        color = (255, 0, 0)  # Blue in BGR.
+        thickness = 2  # Measured in pixels.
+        processed_image = cv2.rectangle(processed_image,
+                                        start_point,
+                                        end_point,
+                                        color,
+                                        thickness)
+    return processed_image
 
 def finish_video(video_file):
     video_file.release()
