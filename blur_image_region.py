@@ -13,6 +13,7 @@ from math import ceil  # Used for rounding up.
 import cv2
 import pytesseract
 import numpy
+import time
 
 default_video_input_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
 default_video_output_location = 'blurred_video.avi'
@@ -22,17 +23,27 @@ sample_image_file = "temp_image_frames/frame217.jpg"
 
 # Note: Eventually, I want the arguments to be specified by the user through some sort of GUI,
 # perhaps by dragging and dropping the file and typing in the file locations / FPS?.
-def blur_video(video_input_file, video_output_location=default_video_output_location, video_fps=default_video_fps):
-    video_file = initialize_video(video_input_file)
-    successful, current_frame = video_file.read()  # Gets the first frame of the video for measurement purposes.
-    height, width, layers = current_frame.shape  # Measures dimensions from the first frame.
-    output_video = cv2.VideoWriter(video_output_location, cv2.VideoWriter_fourcc(*'DIVX'), video_fps, (width, height))  # Formats the video.
-    while successful:
-        current_frame = process_frame(current_frame)
-        output_video.write(current_frame)  # Adds the input video's frame to the output video.
-        successful, current_frame = video_file.read()  # Takes the next individual frame from the video and saves it as an image.
-        print("Read a new frame: " + str(successful) + "  --"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
-    finish_video(output_video)
+def blur_video(video_input_file, video_output_location=default_video_output_location, video_fps=default_video_fps, verbose=False):
+    start_time = time.time()  # Use time.monotonic() in Python 3.3+.
+    num_frames_processed = 0
+    print("Processing video. This could take a while ...")
+    try:
+        video_file = initialize_video(video_input_file)
+        successful, current_frame = video_file.read()  # Gets the first frame of the video for measurement purposes.
+        height, width, layers = current_frame.shape  # Measures dimensions from the first frame.
+        output_video = cv2.VideoWriter(video_output_location, cv2.VideoWriter_fourcc(*'DIVX'), video_fps, (width, height))  # Formats the video.
+        while successful:
+            current_frame = process_frame(current_frame)
+            output_video.write(current_frame)  # Adds the input video's frame to the output video.
+            successful, current_frame = video_file.read()  # Takes the next individual frame from the video and saves it as an image.
+            num_frames_processed += 1
+            if verbose:
+                print("Read a new frame: " + str(successful) + "\n"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
+    except KeyboardInterrupt:
+        print("\n\nVideo generation manually interrupted.")
+    finish_video(output_video, video_output_location)
+    print("Elapsed time = " + str(time.time() - start_time) + " seconds.")
+    print(str(num_frames_processed) + " frames processed")  # TODO: Mention total number of frames in the video.
 
 
 def initialize_video(video_file):
@@ -126,18 +137,22 @@ def blur_all_characters(image_to_process, blurred_image, list_of_character_locat
         try:
             start_point = (int(character[1]), int(character[2]))  # x1, y1
             end_point = (int(character[3]), int(character[4]))  # x2, y2
-        except IndexError:
-            print("Error: Index out of bounds.")
-            print("Offending character tuple: " + str(character) + " on image of size " + str(processed_image.shape))
-        color = (255, 0, 0)  # Blue in BGR.
-        thickness = 2  # Measured in pixels.
-        processed_image = cv2.rectangle(processed_image,
+            color = (255, 0, 0)  # Blue in BGR.
+            thickness = 2  # Measured in pixels.
+            processed_image = cv2.rectangle(processed_image,
                                         start_point,
                                         end_point,
                                         color,
                                         thickness)
+        except IndexError:
+            print("\n\nError: Index out of bounds.")
+            print("Offending character tuple: " + str(character) + " on image of size " + str(processed_image.shape))
+            print("All characters = " + str(list_of_character_locations))
+            pil_image = convert_cv2_to_pil(image_to_process)
+            print("Re-finding characters: " + str(find_characters(pil_image, should_debug = True)))
     return processed_image
 
-def finish_video(video_file):
+def finish_video(video_file, output_file_name):
     video_file.release()
+    print("\n\nVideo saved to " + output_file_name)
 

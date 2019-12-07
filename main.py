@@ -25,7 +25,7 @@ def main():
 
     b.blur_video(b.default_video_input_file)  # TODO: Enable GUI input for these parameters.
 
-    print("Finished main()")
+    print("\nFinished main()")
 
 def test_convert_cv2_to_pil():
     video_file = cv2.VideoCapture(b.default_video_input_file)
