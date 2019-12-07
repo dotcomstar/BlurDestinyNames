@@ -9,3 +9,4 @@
 !/temp_image_frames/frame217.jpg
 !.travis.yml
 !.pylintrc
+!telegram_notification.sh
