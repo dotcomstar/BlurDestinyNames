@@ -127,7 +127,7 @@ def find_characters(image_to_process, should_debug=False):
 
 # This function takes as parameters an unblurred image, its blurred equivalent,
 # and a list of all the characters in the image formatted as
-# ('single character', 'x1', 'x2', 'y1', 'y2', '0')
+# ('single character', 'x1', 'y1', 'x2', 'y2', '0')
 # TODO: Check if bounding boxes return x1 y1 notation, or top, left, width, height.
 # https://stackoverflow.com/questions/20831612/getting-the-bounding-box-of-the-recognized-words-using-python-tesseract
 def blur_all_characters(image_to_process, blurred_image, list_of_character_locations):
@@ -135,6 +135,11 @@ def blur_all_characters(image_to_process, blurred_image, list_of_character_locat
     processed_image = image_to_process
     for character in list_of_character_locations:
         try:
+            # Testing drawing boxes around characters.
+            # 1, 2; 3, 4 is flipped vertically.
+            # 3, 2; 1, 4 is still flipped vertically, and has some weird boxes.
+            # 1, 4; 3, 2 is stil flipped vertically.
+            print(str(list_of_character_locations))
             start_point = (int(character[1]), int(character[2]))  # x1, y1
             end_point = (int(character[3]), int(character[4]))  # x2, y2
             color = (255, 0, 0)  # Blue in BGR.
