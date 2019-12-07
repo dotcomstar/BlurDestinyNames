@@ -13,19 +13,24 @@ def main():
     print("Starting main()")
     print("Using CV2 version: " + cv2.__version__ + "\n")
 
-    test_convert_pil_to_cv2()
+    # test_convert_pil_to_cv2()
 
     # image_file = Image.open(b.sample_image_file)
     # image_file = b.convert_pil_to_cv2(image_file)
     # image_file = b.convert_cv2_to_pil(image_file)
     # b.find_characters(image_file, should_debug=True)  # This line should work
-                                                        # in the final version.
+    #                                                     # in the final version.
 
-    exit()
+    # four_corners = Image.open("quick_brown_fox.png")
+    # b.find_characters(four_corners, should_debug = True)
+    # print("\nToString = " + pytesseract.image_to_string(four_corners))
+    # print("\nToData:\n" + pytesseract.image_to_data(four_corners))
+    # print("\nToOSD = " + pytesseract.image_to_osd(four_corners))
+    # exit()
 
     b.blur_video(b.default_video_input_file)  # TODO: Enable GUI input for these parameters.
 
-    print("Finished main()")
+    print("\nFinished main()")
 
 def test_convert_cv2_to_pil():
     video_file = cv2.VideoCapture(b.default_video_input_file)
@@ -42,10 +47,11 @@ def test_convert_cv2_to_pil():
 
 
 def test_convert_pil_to_cv2():
+    output_video_location = './test_convert_pil_to_cv2.avi'
     current_frame = Image.open('temp_image_frames/frame0.jpg')  # The main line.
     # current_frame = cv2.imread('temp_image_frames/frame0.jpg')  # Something cheeky to test. It works.
     height, width = current_frame.size
-    output_video = cv2.VideoWriter('./test_convert_pil_to_cv2.avi',
+    output_video = cv2.VideoWriter(output_video_location,
                                    cv2.VideoWriter_fourcc(*'MJPG'),
                                    b.default_video_fps,
                                    (width, height))  # Formats the video.
@@ -56,7 +62,9 @@ def test_convert_pil_to_cv2():
         output_video.write(current_frame)  # Adds the input video's frame to the output video.
         print("Read a new frame successfully"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7
         count += 1.
-    b.finish_video(output_video)
+    b.finish_video(output_video, output_video_location)
+
+
 # ~~~~ Don't worry about this for now ~~~~
 if __name__ == "__main__":
     main()
