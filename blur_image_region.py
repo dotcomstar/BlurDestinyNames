@@ -13,45 +13,66 @@ from math import ceil  # Used for rounding up.
 import cv2
 import pytesseract
 import numpy
+import time
 
-default_video_input_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
+default_video_input_file = "OneMinuteCollatGameAbbreviated.mp4"  # Replace with the name of your file.
 default_video_output_location = 'blurred_video.avi'
 default_video_fps = 30
-temp_image_location = "temp_video_during_blur.jpg"
+temp_image_location = "temp_image_during_blur.jpg"
 sample_image_file = "temp_image_frames/frame217.jpg"
 
 # Note: Eventually, I want the arguments to be specified by the user through some sort of GUI,
 # perhaps by dragging and dropping the file and typing in the file locations / FPS?.
-def blur_video(video_input_file, video_output_location=default_video_output_location, video_fps=default_video_fps):
-    video_file = initialize_video(video_input_file)
-    successful, current_frame = video_file.read()  # Gets the first frame of the video for measurement purposes.
-    height, width, layers = current_frame.shape  # Measures dimensions from the first frame.
-    output_video = cv2.VideoWriter(video_output_location, cv2.VideoWriter_fourcc(*'DIVX'), video_fps, (width, height))  # Formats the video.
-    while successful:
-        current_frame = process_frame(current_frame)
-        output_video.write(current_frame)  # Adds the input video's frame to the output video.
-        successful, current_frame = video_file.read()  # Takes the next individual frame from the video and saves it as an image.
-        print("Read a new frame: " + str(successful) + "  --"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
-    finish_video(output_video)
+def blur_video(video_input_file, video_output_location=default_video_output_location, video_fps=default_video_fps, verbose=False):
+    start_time = time.time()  # Use time.monotonic() in Python 3.3+.
+    num_frames_processed = 0
+    print("Processing video. This could take a while ...")
+    try:
+        video_file = initialize_video(video_input_file)
+        successful, current_frame = video_file.read()  # Gets the first frame of the video for measurement purposes.
+        height, width, layers = current_frame.shape  # Measures dimensions from the first frame.
+        output_video = cv2.VideoWriter(video_output_location, cv2.VideoWriter_fourcc(*'DIVX'), video_fps, (width, height))  # Formats the video.
+        while successful:
+            current_frame = process_frame(current_frame)
+            output_video.write(current_frame)  # Adds the input video's frame to the output video.
+            successful, current_frame = video_file.read()  # Takes the next individual frame from the video and saves it as an image.
+            num_frames_processed += 1
+            if verbose:
+                print("Read a new frame: " + str(successful) + "\n"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
+    except KeyboardInterrupt:
+        print("\n\nVideo generation manually interrupted.")
+    finish_video(output_video, video_output_location)
+    print("Elapsed time = " + str(time.time() - start_time) + " seconds.")
+    print(str(num_frames_processed) + " frames processed")  # TODO: Mention total number of frames in the video.
 
 
 def initialize_video(video_file):
     return cv2.VideoCapture(video_file)
 
 
+# TODO: Optimize this command so it does not need to read and write each time.
+# Note also that this leads to differences in the characters found with
+# find_characters()
 def convert_cv2_to_pil(cv2_image):
-    cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
-    pil_image = Image.fromarray(cv2_image)
+    cv2.imwrite(temp_image_location, cv2_image)
+    pil_image = Image.open(temp_image_location)
+    # cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
+    # pil_image = Image.fromarray(cv2_image)
     return pil_image
 
 
-# TODO: Fix this command.
+# TODO: Optimize this command so it does not need to read and write each time.
+# Note also that this leads to differences in the characters found with
+# find_characters()
 def convert_pil_to_cv2(pil_image):
-    pil_image = pil_image.convert('RGB')
-    cv2_image = numpy.array(pil_image)
-    cv2_image = cv2_image[:, :, ::-1].copy()
-    # cv2_image = cv2.cvtColor(numpy.array(pil_image), cv2.COLOR_BGR2RGB)
+    pil_image.save(temp_image_location, "JPEG")
+    pil_image.close()
+    cv2_image = cv2.imread(temp_image_location, cv2.IMREAD_COLOR)
+    # pil_image = pil_image.convert('RGB')
+    # cv2_image = numpy.array(pil_image)
     # cv2_image = cv2_image[:, :, ::-1].copy()
+    # # cv2_image = cv2.cvtColor(numpy.array(pil_image), cv2.COLOR_BGR2RGB)
+    # # cv2_image = cv2_image[:, :, ::-1].copy()
     return cv2_image
 
 
@@ -60,10 +81,9 @@ def convert_pil_to_cv2(pil_image):
 def process_frame(image_to_process):
     image_to_process = convert_cv2_to_pil(image_to_process)
     blurred_image = blur(image_to_process)
-    list_of_character_locations = find_characters(image_to_process)
-    for character in list_of_character_locations:
-        image = crop_character_and_place_in_larger_image(image_to_process, blurred_image, character)
-    image = convert_pil_to_cv2(image)
+    image_data = pytesseract.image_to_data(image_to_process, output_type=pytesseract.Output.DICT)
+    image_to_process = convert_pil_to_cv2(image_to_process)
+    image = blur_all_characters(image_to_process, blurred_image, image_data)
     return image
 
 
@@ -78,6 +98,7 @@ def blur(image_to_process, resize_ratio=(1.0/30.0)):
     return blurred_image
 
 
+# ~~~ DEPRECATED ~~~
 # This function takes as parameters an image and an optional boolean for
 # debugging purposes. This function will parse the image for text, and return
 # the locations of each text character as a 2D tuple (static array).
@@ -105,9 +126,36 @@ def find_characters(image_to_process, should_debug=False):
         print(split_tuple_of_character_locations)
     return split_tuple_of_character_locations
 
-#TODO: Write comment for this function
-def crop_character_and_place_in_larger_image(image_to_process, blurred_image, character):
-    # TODO: Implement this function
 
-def finish_video(video_file):
+# This function takes as parameters an unblurred image, its blurred equivalent,
+# and the data from an image as given by pytesseract.image_to_data()
+# TODO: Check if bounding boxes return x1 y1 notation, or top, left, width, height.
+# https://stackoverflow.com/questions/20831612/getting-the-bounding-box-of-the-recognized-words-using-python-tesseract
+def blur_all_characters(image_to_process, blurred_image, image_data):
+    processed_image = image_to_process
+    num_boxes = len(image_data['level'])
+    for box in range(num_boxes):
+        try:
+            (x, y, width, height) = (image_data['left'][box],  # Unpack dimension variables.
+                                     image_data['top'][box],
+                                     image_data['width'][box],
+                                     image_data['height'][box])
+            start_point = (x, y)
+            end_point = (x + width, y + height)  # Add to go down vertically.
+            color = (255, 255, 0)  # (Blue, Green, Red)
+            thickness = 2  # Measured in pixels.
+            processed_image = cv2.rectangle(processed_image,
+                                            start_point,
+                                            end_point,
+                                            color,
+                                            thickness)
+        except IndexError:
+            print("\n\nError: Index out of bounds.")
+            print("Offending data: " + str(image_data))
+    return processed_image
+
+
+def finish_video(video_file, output_file_name):
     video_file.release()
+    print("\n\nVideo saved to " + output_file_name)
+

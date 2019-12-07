@@ -4,7 +4,7 @@ A simple way to blur character names in Destiny 2 on PC. This was created in res
 ## Build Status
 |**Branch**|**Build Status**|
 |:---------|:--------------:|
-|*[master](https://github.com/dotcomstar/BlurDestinyNames)*|[![Build Status](https://travis-ci.org/dotcomstar/BlurDestinyNames.svg?branch=master)](https://travis-ci.org/dotcomstar/BlurDestinyNames)|
+|*[master](https://github.com/dotcomstar/BlurDestinyNames)*|[![Build Status](https://travis-ci.com/dotcomstar/BlurDestinyNames.svg?branch=master)](https://travis-ci.com/dotcomstar/BlurDestinyNames)|
 
 ### Repository Creators:
 @dotcomstar and @Toji99

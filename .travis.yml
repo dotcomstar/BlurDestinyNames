@@ -1,11 +1,22 @@
-# .travis.yml created by Jet Lee
-
 os: linux
 dist: xenial  # Use Ubuntu 16.04 as our Travis CI environment
 language: python
 python: "2.7"  # Soon to be deprecated, will need to update.
 env: YELLOW="\033[1;33m" \
      NC="\033[0m" # No Color
+
+
+# =========================================
+# Specify when to receive build notifications.
+# The options are always, change, and never.
+# =========================================
+notifications:
+  email:
+    recipients:
+      - gamestar109@live.com
+    on_success: change # default: change
+    on_failure: change # default: always
+
 
 # =========================================
 # Install dependencies.
@@ -19,10 +30,17 @@ install:
 #  - pip install opencv-contrib-python  # Requires matplotlib and numpy to also be installed.
   - pip install --upgrade opencv-python  # Requires matplotlib and numpy to also be installed.
 
+
 # =========================================
-# Actually verify files
+# Actually verify files.
 # =========================================
 script:
   # Lint the Python files
   - echo -e "${YELLOW}Analyzing main.py...${NC}" && pylint --errors-only "$TRAVIS_BUILD_DIR"/main.py
   - echo -e "${YELLOW}Analyzing blur_image_region.py...${NC}" && pylint --errors-only "$TRAVIS_BUILD_DIR"/blur_image_region.py
+
+# =========================================
+# Send build notifications to Telegram.
+# =========================================
+after_script:
+  - bash ./telegram_notification.sh
