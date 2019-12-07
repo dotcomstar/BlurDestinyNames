@@ -15,7 +15,7 @@ import pytesseract
 import numpy
 import time
 
-default_video_input_file = "OneMinuteCollatGame.mp4"  # Replace with the name of your file.
+default_video_input_file = "OneMinuteCollatGameAbbreviated.mp4"  # Replace with the name of your file.
 default_video_output_location = 'blurred_video.avi'
 default_video_fps = 30
 temp_image_location = "temp_image_during_blur.jpg"
@@ -81,9 +81,9 @@ def convert_pil_to_cv2(pil_image):
 def process_frame(image_to_process):
     image_to_process = convert_cv2_to_pil(image_to_process)
     blurred_image = blur(image_to_process)
-    list_of_character_locations = find_characters(image_to_process)
+    image_data = pytesseract.image_to_data(image_to_process, output_type=pytesseract.Output.DICT)
     image_to_process = convert_pil_to_cv2(image_to_process)
-    image = blur_all_characters(image_to_process, blurred_image, list_of_character_locations)
+    image = blur_all_characters(image_to_process, blurred_image, image_data)
     return image
 
 
@@ -98,6 +98,7 @@ def blur(image_to_process, resize_ratio=(1.0/30.0)):
     return blurred_image
 
 
+# ~~~ DEPRECATED ~~~
 # This function takes as parameters an image and an optional boolean for
 # debugging purposes. This function will parse the image for text, and return
 # the locations of each text character as a 2D tuple (static array).
@@ -125,37 +126,34 @@ def find_characters(image_to_process, should_debug=False):
         print(split_tuple_of_character_locations)
     return split_tuple_of_character_locations
 
+
 # This function takes as parameters an unblurred image, its blurred equivalent,
-# and a list of all the characters in the image formatted as
-# ('single character', 'x1', 'y1', 'x2', 'y2', '0')
+# and the data from an image as given by pytesseract.image_to_data()
 # TODO: Check if bounding boxes return x1 y1 notation, or top, left, width, height.
 # https://stackoverflow.com/questions/20831612/getting-the-bounding-box-of-the-recognized-words-using-python-tesseract
-def blur_all_characters(image_to_process, blurred_image, list_of_character_locations):
-    # TODO: Implement this function
+def blur_all_characters(image_to_process, blurred_image, image_data):
     processed_image = image_to_process
-    for character in list_of_character_locations:
+    num_boxes = len(image_data['level'])
+    for box in range(num_boxes):
         try:
-            # Testing drawing boxes around characters.
-            # 1, 2; 3, 4 is flipped vertically.
-            # 3, 2; 1, 4 is still flipped vertically, and has some weird boxes.
-            # 1, 4; 3, 2 is stil flipped vertically.
-            print(str(list_of_character_locations))
-            start_point = (int(character[1]), int(character[2]))  # x1, y1
-            end_point = (int(character[3]), int(character[4]))  # x2, y2
-            color = (255, 0, 0)  # Blue in BGR.
+            (x, y, width, height) = (image_data['left'][box],  # Unpack dimension variables.
+                                     image_data['top'][box],
+                                     image_data['width'][box],
+                                     image_data['height'][box])
+            start_point = (x, y)
+            end_point = (x + width, y + height)  # Add to go down vertically.
+            color = (255, 255, 0)  # (Blue, Green, Red)
             thickness = 2  # Measured in pixels.
             processed_image = cv2.rectangle(processed_image,
-                                        start_point,
-                                        end_point,
-                                        color,
-                                        thickness)
+                                            start_point,
+                                            end_point,
+                                            color,
+                                            thickness)
         except IndexError:
             print("\n\nError: Index out of bounds.")
-            print("Offending character tuple: " + str(character) + " on image of size " + str(processed_image.shape))
-            print("All characters = " + str(list_of_character_locations))
-            pil_image = convert_cv2_to_pil(image_to_process)
-            print("Re-finding characters: " + str(find_characters(pil_image, should_debug = True)))
+            print("Offending data: " + str(image_data))
     return processed_image
+
 
 def finish_video(video_file, output_file_name):
     video_file.release()

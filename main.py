@@ -21,12 +21,12 @@ def main():
     # b.find_characters(image_file, should_debug=True)  # This line should work
     #                                                     # in the final version.
 
-    four_corners = Image.open("quick_brown_fox.png")
-    b.find_characters(four_corners, should_debug = True)
-    print("\nToString = " + pytesseract.image_to_string(four_corners))
-    print("\nToData:\n" + pytesseract.image_to_data(four_corners))
-    print("\nToOSD = " + pytesseract.image_to_osd(four_corners))
-    exit()
+    # four_corners = Image.open("quick_brown_fox.png")
+    # b.find_characters(four_corners, should_debug = True)
+    # print("\nToString = " + pytesseract.image_to_string(four_corners))
+    # print("\nToData:\n" + pytesseract.image_to_data(four_corners))
+    # print("\nToOSD = " + pytesseract.image_to_osd(four_corners))
+    # exit()
 
     b.blur_video(b.default_video_input_file)  # TODO: Enable GUI input for these parameters.
 
