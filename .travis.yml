@@ -36,7 +36,7 @@ install:
 # =========================================
 script:
   # Lint the Python files
-  - echo -e "${YELLOW}Analyzing main.py...${NC}" && pylint --extension-pkg-whitelist=cv2 --errors-only "$TRAVIS_BUILD_DIR"/main.py
+  - echo -e "${YELLOW}Analyzing main.py...${NC}" && pylint --errors-only "$TRAVIS_BUILD_DIR"/main.py
   - echo -e "${YELLOW}Analyzing blur_image_region.py...${NC}" && pylint --errors-only "$TRAVIS_BUILD_DIR"/blur_image_region.py
 
 # =========================================
