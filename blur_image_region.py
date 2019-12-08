@@ -29,6 +29,9 @@ def blur_video(video_input_file, video_output_location=default_video_output_loca
     print("Processing video. This could take a while ...")
     try:
         video_file = initialize_video(video_input_file)
+        num_frames = int(video_file.get(cv2.CAP_PROP_FRAME_COUNT))
+        frame_processing_rate = 1.5  # 1.5 frames per second.  TODO: Determine automatically.
+        print("Expected wait time: " + str(float(num_frames) / frame_processing_rate) + " seconds.")
         successful, current_frame = video_file.read()  # Gets the first frame of the video for measurement purposes.
         height, width, layers = current_frame.shape  # Measures dimensions from the first frame.
         output_video = cv2.VideoWriter(video_output_location, cv2.VideoWriter_fourcc(*'DIVX'), video_fps, (width, height))  # Formats the video.
