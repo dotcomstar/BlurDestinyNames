@@ -40,7 +40,7 @@ def test_convert_pil_to_cv2():
     video_fps = 33.3
     output_video = cv2.VideoWriter(output_video_location,
                                    cv2.VideoWriter_fourcc(*'MJPG'),
-                                   video_fps
+                                   video_fps,
                                    (width, height))  # Formats the video.
 
     current_frame = b.convert_pil_to_cv2(current_frame)  # The actual conversion.
