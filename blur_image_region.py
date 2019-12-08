@@ -39,6 +39,7 @@ def blur_video(video_input_file, video_output_location=default_video_output_loca
             num_frames_processed += 1
             if verbose:
                 print("Read a new frame: " + str(successful) + "\n"),  # Used for debugging. Note: This is the less-preferred printing syntax, but works with Python 2.7.
+        print("All frames processed successfully.")
     except KeyboardInterrupt:
         print("\n\nVideo generation manually interrupted.")
     finish_video(output_video, video_output_location)
@@ -128,9 +129,9 @@ def find_characters(image_to_process, should_debug=False):
 
 
 # This function takes as parameters an unblurred image, its blurred equivalent,
-# and the data from an image as given by pytesseract.image_to_data()
-# TODO: Check if bounding boxes return x1 y1 notation, or top, left, width, height.
-# https://stackoverflow.com/questions/20831612/getting-the-bounding-box-of-the-recognized-words-using-python-tesseract
+# and the data from an image as given by pytesseract.image_to_data().
+# It currently draws bounding boxes around each word in an image,
+# but it will eventually blur these regions instead of drawing boxes.
 def blur_all_characters(image_to_process, blurred_image, image_data):
     processed_image = image_to_process
     num_boxes = len(image_data['level'])

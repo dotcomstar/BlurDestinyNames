@@ -12,25 +12,11 @@ import blur_image_region as b
 def main():
     print("Starting main()")
     print("Using CV2 version: " + cv2.__version__ + "\n")
-
     # test_convert_pil_to_cv2()
-
-    # image_file = Image.open(b.sample_image_file)
-    # image_file = b.convert_pil_to_cv2(image_file)
-    # image_file = b.convert_cv2_to_pil(image_file)
-    # b.find_characters(image_file, should_debug=True)  # This line should work
-    #                                                     # in the final version.
-
-    # four_corners = Image.open("quick_brown_fox.png")
-    # b.find_characters(four_corners, should_debug = True)
-    # print("\nToString = " + pytesseract.image_to_string(four_corners))
-    # print("\nToData:\n" + pytesseract.image_to_data(four_corners))
-    # print("\nToOSD = " + pytesseract.image_to_osd(four_corners))
     # exit()
-
-    b.blur_video(b.default_video_input_file)  # TODO: Enable GUI input for these parameters.
-
+    b.blur_video(b.default_video_input_file)  # TODO: Enable GUI/command line input for these parameters.
     print("\nFinished main()")
+
 
 def test_convert_cv2_to_pil():
     video_file = cv2.VideoCapture(b.default_video_input_file)
