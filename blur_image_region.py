@@ -17,18 +17,18 @@ import time
 
 default_video_input_file = "OneMinuteCollatGameAbbreviated.mp4"  # Replace with the name of your file.
 default_video_output_location = 'blurred_video.avi'
-default_video_fps = 30
 temp_image_location = "temp_image_during_blur.jpg"
 sample_image_file = "temp_image_frames/frame217.jpg"
 
 # Note: Eventually, I want the arguments to be specified by the user through some sort of GUI,
 # perhaps by dragging and dropping the file and typing in the file locations / FPS?.
-def blur_video(video_input_file, video_output_location=default_video_output_location, video_fps=default_video_fps, verbose=False):
+def blur_video(video_input_file, video_output_location=default_video_output_location, verbose=False):
     start_time = time.time()  # Use time.monotonic() in Python 3.3+.
     num_frames_processed = 0
     print("Processing video. This could take a while ...")
     try:
         video_file = initialize_video(video_input_file)
+        video_fps = video_file.get(cv2.CAP_PROP_FPS)
         num_frames = int(video_file.get(cv2.CAP_PROP_FRAME_COUNT))
         frame_processing_rate = 1.5  # 1.5 frames per second.  TODO: Determine automatically.
         print("Expected wait time: " + str(float(num_frames) / frame_processing_rate) + " seconds.")
