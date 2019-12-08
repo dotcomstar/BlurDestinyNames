@@ -37,9 +37,10 @@ def test_convert_pil_to_cv2():
     current_frame = Image.open('temp_image_frames/frame0.jpg')  # The main line.
     # current_frame = cv2.imread('temp_image_frames/frame0.jpg')  # Something cheeky to test. It works.
     height, width = current_frame.size
+    video_fps = 33.3
     output_video = cv2.VideoWriter(output_video_location,
                                    cv2.VideoWriter_fourcc(*'MJPG'),
-                                   b.default_video_fps,
+                                   video_fps
                                    (width, height))  # Formats the video.
 
     current_frame = b.convert_pil_to_cv2(current_frame)  # The actual conversion.
